@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Pacientes</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 80%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .foto-preview { max-width: 50px; height: auto; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>📋 Listado de Pacientes</h1>
+    
+    <a th:ref="@{/pacientes/nuevo}"><button>Crear Nuevo Paciente</button></a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Documento</th>
+                <th>Foto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="paciente : ${pacientes}">
+                <td th:text="${paciente.id}">ID del Paciente</td>
+                <td th:text="${paciente.nombre}">Nombre</td>
+                <td th:text="${paciente.apellido}">Apellido</td>
+                <td th:text="${paciente.documento}">Documento</td>
+                <td>
+                    <span th:if="${paciente.foto != null}">
+                        <img th:src="@{/pacientes/foto/{id}(id=${paciente.id})}" 
+                            alt="Foto de Paciente" 
+                            style="max-width: 50px; height: auto; border-radius: 5px;"
+                        />
+                    </span>
+                    <span th:unless="${paciente.foto != null}">
+                        Sin Foto
+                    </span>
+                </td>
+                <td>
+                    <a th:href="@{/pacientes/modificar/{id}(id=${paciente.id})}"><button>Editar</button></a>
+                    
+                    <form th:action="@{/pacientes/eliminar/{id}(id=${paciente.id})}" method="POST" style="display:inline;">
+                        <button type="submit" onclick="return confirm('¿Estás seguro de eliminar a este paciente?')" style="background-color: #dc3545;">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

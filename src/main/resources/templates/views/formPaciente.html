@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${paciente != null and paciente.id != null} ? 'Modificar Paciente' : 'Crear Paciente'">Formulario Paciente</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px; }
+        label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #0056b3; }
+        .back-link { display: block; margin-top: 20px; text-align: center; color: #007bff; text-decoration: none; }
+        .current-photo { margin-top: 10px; border: 1px solid #ccc; padding: 5px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 th:text="${paciente != null and paciente.id != null} ? '✏️ Modificar Paciente' : '➕ Crear Nuevo Paciente'"></h1>
+
+        <form 
+            th:action="${paciente != null and paciente.id != null} ? @{/pacientes/modificar/{id}(id=${paciente.id})} : @{/pacientes/crear}" 
+            method="POST" 
+            enctype="multipart/form-data">
+            
+            <input 
+                th:if="${paciente != null and paciente.id != null}" 
+                type="hidden" 
+                name="_method" 
+                value="PATCH" />
+
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" th:value="${paciente != null} ? ${paciente.nombre} : ''" required>
+
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" name="apellido" th:value="${paciente != null} ? ${paciente.apellido} : ''" required>
+
+            <label for="documento">Documento:</label>
+            <input type="text" id="documento" name="documento" th:value="${paciente != null} ? ${paciente.documento} : ''" required>
+            
+            <label for="archivo">
+                <span th:text="${paciente != null and paciente.id != null} ? 'Nueva Foto (opcional):' : 'Foto: (requerida)'"></span>
+            </label>
+            
+            <input type="file" id="archivo" 
+                th:name="${foto}"
+                accept="image/*" 
+                th:required="${paciente == null or paciente.id == null}" 
+            />
+
+            <button type="submit" th:text="${paciente != null and paciente.id != null} ? 'Guardar Cambios' : 'Crear Paciente'"></button>
+        </form>
+
+        <a th:href="@{/pacientes/listar}" class="back-link">Volver al Listado</a>
+    </div>
+
+</body>
+</html>

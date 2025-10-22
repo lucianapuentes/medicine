@@ -1,4 +1,4 @@
-package com.example.medicine.entities;
+package com.example.medicine.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +21,8 @@ import java.io.Serializable;
 public class FotoPaciente implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(updatable = false, nullable = false)
     private String id;
 
@@ -33,7 +36,7 @@ public class FotoPaciente implements Serializable {
     @Basic(fetch = FetchType.LAZY)
     private byte[] contenido;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 

@@ -1,7 +1,8 @@
 package com.example.medicine.services;
-import com.example.medicine.entities.FotoPaciente;
-import com.example.medicine.entities.Paciente;
 import com.example.medicine.errors.ErrorServicio;
+import com.example.medicine.model.FotoPaciente;
+import com.example.medicine.model.Paciente;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,12 +1,16 @@
-package com.example.medicine.entities;
+package com.example.medicine.model;
+import com.example.medicine.errors.ErrorServicio;
+import com.example.medicine.model.FotoPaciente;
 
 import lombok.*;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import com.example.medicine.entities.FotoPaciente;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import com.example.medicine.errors.*;
+import org.hibernate.annotations.GenericGenerator;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,9 +19,10 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "paciente")
-public class Paciente implements Serializable {
+public class Paciente  implements Serializable {
   @Id
-  @GeneratedValue(generator = "UUID")
+  @GeneratedValue(generator = "uuid2")
+  @GenericGenerator(name = "uuid2", strategy = "uuid2")
   @Column(updatable = false, nullable = false)
   private String id;
 
@@ -33,8 +38,12 @@ public class Paciente implements Serializable {
   @Column(name = "eliminado")
   private boolean eliminado;
 
+  @OneToOne(mappedBy = "paciente", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private FotoPaciente foto;
+
   @OneToMany(mappedBy = "paciente", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<FotoPaciente> fotos;
+  private List<HistoriaClinica> historiasClinicas;
+
 
   public String getNombreCompleto() {
     return nombre + " " + apellido;
@@ -44,27 +53,6 @@ public class Paciente implements Serializable {
     return !eliminado;
   }
 
-  public void agregarFoto(FotoPaciente foto) {
-    if (fotos == null) {
-      fotos = new ArrayList<>();
-    } else {
-        for (FotoPaciente f : fotos) {
-            if (!f.isEliminado()) {
-                f.setEliminado(true);
-            }
-        }
-    }
-    fotos.add(foto);
-    foto.setPaciente(this);
-  }
 
-  public Optional<FotoPaciente> mostrarFoto(List<FotoPaciente> fotos) {
-    for (FotoPaciente f : fotos) {
-        if (!f.isEliminado()) {
-            return Optional.of(f);
-        }
-    }
-    return Optional.empty();
-    }
 }
 

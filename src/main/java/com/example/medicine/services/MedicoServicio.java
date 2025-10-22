@@ -1,6 +1,6 @@
 package com.example.medicine.services;
-import com.example.medicine.entities.Medico;
 import com.example.medicine.errors.ErrorServicio;
+import com.example.medicine.model.Medico;
 import com.example.medicine.repositories.MedicoRepositorio;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

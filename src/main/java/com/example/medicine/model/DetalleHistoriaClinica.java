@@ -1,9 +1,7 @@
-package com.example.medicine.entities;
+package com.example.medicine.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import com.example.medicine.entities.HistoriaClinica;
-import com.example.medicine.entities.Medico;
 import java.util. Date;
 @Getter
 @Setter

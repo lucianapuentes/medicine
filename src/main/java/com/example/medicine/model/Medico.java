@@ -1,4 +1,4 @@
-package com.example.medicine.entities;
+package com.example.medicine.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.io.Serializable;
