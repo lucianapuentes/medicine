@@ -22,7 +22,7 @@
         <h1 th:text="${paciente != null and paciente.id != null} ? '✏️ Modificar Paciente' : '➕ Crear Nuevo Paciente'"></h1>
 
         <form 
-            th:action="${paciente != null and paciente.id != null} ? @{/pacientes/modificar/{id}(id=${paciente.id})} : @{/pacientes/crear}" 
+            th:action="${paciente != null and paciente.id != null} ? @{/pacientes/actualizar/{id}(id=${paciente.id})} : @{/pacientes/crear}" 
             method="POST" 
             enctype="multipart/form-data">
             
@@ -40,13 +40,9 @@
 
             <label for="documento">Documento:</label>
             <input type="text" id="documento" name="documento" th:value="${paciente != null} ? ${paciente.documento} : ''" required>
-            
-            <label for="archivo">
-                <span th:text="${paciente != null and paciente.id != null} ? 'Nueva Foto (opcional):' : 'Foto: (requerida)'"></span>
-            </label>
-            
+            <label for="archivo">Foto del Paciente:</label>
             <input type="file" id="archivo" 
-                th:name="${foto}"
+                th:name="archivo" 
                 accept="image/*" 
                 th:required="${paciente == null or paciente.id == null}" 
             />

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>Lista de Pacientes</title>
     <style>
@@ -11,30 +12,30 @@
         .foto-preview { max-width: 50px; height: auto; border-radius: 5px; }
     </style>
 </head>
+
 <body>
 
     <h1>📋 Listado de Pacientes</h1>
-    
-    <a th:ref="@{/pacientes/nuevo}"><button>Crear Nuevo Paciente</button></a>
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Documento</th>
-                <th>Foto</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="paciente : ${pacientes}">
-                <td th:text="${paciente.id}">ID del Paciente</td>
-                <td th:text="${paciente.nombre}">Nombre</td>
-                <td th:text="${paciente.apellido}">Apellido</td>
-                <td th:text="${paciente.documento}">Documento</td>
-                <td>
+    <a th:href="@{/pacientes/nuevo}"><button>Crear Nuevo Paciente</button></a>
+
+    <table class="table">
+    <thead>
+        <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Documento</th>
+        <th>Foto</th>
+        <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="paciente : ${pacientes}"
+            th:classappend="${paciente.eliminado} ? 'table-danger' : ''">
+        <td th:text="${paciente.nombre}"></td>
+        <td th:text="${paciente.apellido}"></td>
+        <td th:text="${paciente.documento}"></td>
+        <td>
                     <span th:if="${paciente.foto != null}">
                         <img th:src="@{/pacientes/foto/{id}(id=${paciente.id})}" 
                             alt="Foto de Paciente" 
@@ -44,17 +45,24 @@
                     <span th:unless="${paciente.foto != null}">
                         Sin Foto
                     </span>
-                </td>
-                <td>
-                    <a th:href="@{/pacientes/modificar/{id}(id=${paciente.id})}"><button>Editar</button></a>
-                    
-                    <form th:action="@{/pacientes/eliminar/{id}(id=${paciente.id})}" method="POST" style="display:inline;">
-                        <button type="submit" onclick="return confirm('¿Estás seguro de eliminar a este paciente?')" style="background-color: #dc3545;">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
+        </td>
+
+        <!-- Solo mostrar los botones si NO está eliminado -->
+        <td>
+            <div th:if="${!paciente.eliminado}">
+            <a th:href="@{'/pacientes/modificar/' + ${paciente.id}}" class="btn btn-warning btn-sm">Modificar</a>
+            <a th:href="@{'/pacientes/eliminar/' + ${paciente.id}}" class="btn btn-danger btn-sm">Eliminar</a>
+            </div>
+            <div th:if="${paciente.eliminado}">
+            <span class="text-muted">Eliminado</span>
+            </div>
+        </td>
+        </tr>
+    </tbody>
     </table>
+<!-- Bootstrap core JavaScript -->
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -10,6 +10,7 @@ import com.example.medicine.model.Paciente;
 import com.example.medicine.model.Usuario;
 import com.example.medicine.repositories.PacienteRepositorio;
 import com.example.medicine.repositories.UsuarioRepositorio;
+import com.example.medicine.repositories.FotoPacienteRepositorio;
 import java.util.Optional;
 import java.util.List;
 @Service
@@ -17,6 +18,9 @@ import java.util.List;
 public class PacienteServicio extends EntityServiceTemplate<Paciente> {
     @Autowired
     private PacienteRepositorio pacienteRepositorio;
+
+    @Autowired
+    private FotoPacienteRepositorio fotoPacienteRepositorio;
     
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
@@ -46,14 +50,31 @@ public class PacienteServicio extends EntityServiceTemplate<Paciente> {
 
     if(paciente.getFoto() == null){
       throw new ErrorServicio("El paciente debe tener una foto.");
+    }else{
+      System.out.println("Valida foto del paciente: " + paciente.getFoto().getNombre());
     }
   }
   @Transactional
   @Override
-    protected void guardar(Paciente paciente) throws ErrorServicio {
-        System.out.println("Guardando paciente: " + paciente.getNombreCompleto());
-        pacienteRepositorio.save(paciente);
-    }
+  protected void guardar(Paciente paciente) throws ErrorServicio {
+      System.out.println("Guardando paciente: " + paciente.getNombreCompleto());
+
+      FotoPaciente foto = paciente.getFoto();
+
+      // ⚠️ Validamos que la foto no sea nula
+      if (foto == null) {
+          throw new ErrorServicio("El paciente debe tener una foto.");
+      }
+
+      // 🔹 Establecemos la relación bidireccional ANTES de guardar
+      foto.setPaciente(paciente);
+      paciente.setFoto(foto);
+
+      // 🔹 Guardamos solo el paciente: gracias al cascade, la foto también se guarda
+      pacienteRepositorio.save(paciente);
+
+      System.out.println("Paciente y foto guardados correctamente.");
+  }
   
     @Transactional
     @Override
@@ -74,6 +95,7 @@ public class PacienteServicio extends EntityServiceTemplate<Paciente> {
               FotoPaciente nuevaFoto = paciente.getFoto();
               nuevaFoto.setPaciente(existentePaciente); // establecer la relación
               existentePaciente.setFoto(nuevaFoto); // usa la lógica del modelo
+              fotoPacienteRepositorio.save(nuevaFoto);
           }
 
             pacienteRepositorio.save(existentePaciente);

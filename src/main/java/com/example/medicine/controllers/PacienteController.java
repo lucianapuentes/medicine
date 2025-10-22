@@ -25,8 +25,8 @@ public class PacienteController {
     private PacienteServicio pacienteServicio;
 
 
-    @PatchMapping("/modificar/{id}")
-    public String modificarPaciente(
+    @PostMapping("/actualizar/{id}")
+    public String actualizarPaciente(
             @PathVariable String id,
             @RequestParam String nombre,
             @RequestParam String apellido,
@@ -54,56 +54,36 @@ public class PacienteController {
                 nuevaFoto.setNombre(archivo.getName());
                 nuevaFoto.setContenido(archivo.getBytes());
                 paciente.setFoto(nuevaFoto);
+                nuevaFoto.setPaciente(paciente);
             }
         }
         pacienteServicio.actualizar(paciente);
-        return "redirect:/pacientes/listar";
+        return "redirect:/pacientes";
     }
     @PostMapping("/crear")
     public String crearPaciente(
-        @ModelAttribute("nombre") String nombre,
-        @ModelAttribute("apellido") String apellido,
-        @ModelAttribute("documento") String documento,
-        @ModelAttribute("archivo") MultipartFile foto, // Esto es el archivo
-        Model model
-        ) throws Exception {
+            @RequestParam String nombre,
+            @RequestParam String apellido,
+            @RequestParam String documento,
+            @RequestParam MultipartFile archivo,
+            Model model
+    ) throws Exception {
         Paciente paciente = new Paciente();
         paciente.setNombre(nombre);
         paciente.setApellido(apellido);
         paciente.setDocumento(documento);
-        
-        // --- Lógica de Corrección ---
-        
-        if (foto != null) { 
-            FotoPaciente fotoPaciente = new FotoPaciente();
-            
-            // CORRECCIÓN 1: Manejar el tipo MIME nulo
-            String mimeType = foto.getContentType();
-            fotoPaciente.setMime(mimeType != null ? mimeType : "application/octet-stream");
-            
-            // CORRECCIÓN 2: Manejar el nombre del archivo nulo o vacío
-            String fileName = foto.getOriginalFilename();
-            fotoPaciente.setNombre(fileName != null && !fileName.isEmpty() ? fileName : "archivo-sin-nombre");
-            fotoPaciente.setPaciente(paciente);
-            
-            // Obtener el contenido del archivo
-            fotoPaciente.setContenido(foto.getBytes());
-            
-            // Importante: Si Paciente tiene una lista de fotos, usa .getFotos().add(fotoPaciente);
-            // Si Paciente tiene un solo campo de foto:
-            paciente.setFoto(fotoPaciente);
-        } else {
-            // Opción A: Si la foto es OBLIGATORIA:
-             model.addAttribute("error", "La foto es obligatoria.");
-             return "views/pacientes/formPaciente"; 
 
-            // Opción B: Si la foto es OPCIONAL, simplemente no se añade nada.
+        if (archivo != null && !archivo.isEmpty()) {
+            FotoPaciente foto = new FotoPaciente();
+            foto.setMime(archivo.getContentType());
+            foto.setNombre(archivo.getOriginalFilename()); // ⚠️ este es el correcto, no getName()
+            foto.setContenido(archivo.getBytes());
+            foto.setPaciente(paciente);
+            paciente.setFoto(foto);
         }
-        
-        // ----------------------------
 
         pacienteServicio.crear(paciente);
-        return "redirect:/pacientes/listar";
+        return "redirect:/pacientes";
     }
 
     @PostMapping("/eliminar/{id}")
@@ -114,7 +94,7 @@ public class PacienteController {
         }
         Paciente paciente = pacienteOpt.get();
         pacienteServicio.eliminar(paciente);
-        return "redirect:views/pacientes";
+        return "redirect:/pacientes";
     }
 
     @GetMapping("")
@@ -150,6 +130,21 @@ public class PacienteController {
 
         // Retorna 404 si el paciente o la foto no existe
         return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+    }
+    @GetMapping("/modificar/{id}") // <--- ESTE MÉTODO ES EL QUE FALTA
+    public String mostrarFormularioModificacion(@PathVariable String id, Model model) throws Exception {
+        Optional<Paciente> pacienteOpt = pacienteServicio.findById(id);
+        
+        if (!pacienteOpt.isPresent()) {
+            // En lugar de una excepción cruda, podrías redirigir con un mensaje de error.
+            throw new Exception("No se encontró el paciente solicitado para modificar");
+        }
+        
+        // 1. Añade el paciente al modelo para que el formulario se prellene
+        model.addAttribute("paciente", pacienteOpt.get());
+        
+        // 2. Retorna la vista del formulario (asumo que se llama formPaciente.html)
+        return "views/formPaciente"; 
     }
   
 
