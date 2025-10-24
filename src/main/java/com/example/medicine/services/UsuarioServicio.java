@@ -8,6 +8,7 @@ import com.example.medicine.repositories.UsuarioRepositorio;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -65,31 +66,23 @@ public class UsuarioServicio {
   }
 
   // Escritura
-
   @Transactional
-  public Usuario crearUsuario(String nombreUsuario, String clave) throws ErrorServicio {
-    System.out.println("creando usuario");
-    validar(nombreUsuario, clave);
-    try{
-      if (buscarUsuarioPorNombre(nombreUsuario) != null) {
-        throw new ErrorServicio("El nombre de usuario ya existe");
-      }
-      Usuario usuario = new Usuario();
-      usuario.setNombreUsuario(nombreUsuario);
-      usuario.setClave(UtilServicio.encriptarClave(clave));
-      usuario.setEliminado(false);
-      usuarioRepositorio.save(usuario);
-      System.out.println("creo usuario: " + usuario.getNombreUsuario());
-      return usuario;
-    }catch (Exception e) {
-      e.printStackTrace(); // o usar logger.error("Error creando usuario", e);
-      throw new ErrorServicio("Error del sistema: " + e.getMessage());
+    public Usuario registrar(String nombre, String password, String password2) throws ErrorServicio {
+        validar(nombre, password, password2);
+
+        Usuario usuario = Usuario.builder().nombreUsuario(nombre).
+                clave(UtilServicio.encriptarClave(password)).build();
+        usuarioRepositorio.save(usuario);
+
+        usuarioRepositorio.save(usuario);
+        return usuario;
     }
-  }
+
+ 
 
   @Transactional
   public void modificarUsuario(String id, String nombreUsuario, String clave) throws ErrorServicio {
-    validar(nombreUsuario, clave);
+    validar(nombreUsuario, clave, clave);
     try{
       if (id == null) {
         throw new ErrorServicio("El id no puede ser nulo");
@@ -153,17 +146,19 @@ public class UsuarioServicio {
 
   // Validacion
 
-  private void validar(String nombreUsuario, String clave) throws ErrorServicio {
+  private void validar(String nombreUsuario, String clave1, String clave2) throws ErrorServicio {
     if(nombreUsuario == null || nombreUsuario.isEmpty()){
       throw new ErrorServicio("El nombre de usuario no puede ser nulo o estar vacío");
     }
-    if(clave == null || clave.isEmpty()){
+    if(clave1 == null || clave1.isEmpty()){
       throw new ErrorServicio("La clave no puede ser nula o estar vacía");
     }
-    if (clave.length() < 6 || clave.length() > 12) {
+    if (clave1.length() < 6 || clave1.length() > 12) {
       throw new ErrorServicio("La clave debe tener entre 6 y 12 caracteres");
     }
-    
+    if (!clave1.equals(clave2)) {
+      throw new ErrorServicio("Las claves no coinciden");
+    }
   }
 
   public boolean esAdmin(String id){

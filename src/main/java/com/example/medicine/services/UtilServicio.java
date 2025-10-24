@@ -43,6 +43,10 @@ public class UtilServicio {
       throw new ErrorServicio("Error de sistema");
     }
   }
+  public static boolean validarClave(String claveIngresada, String claveEncriptada) throws ErrorServicio {
+    String claveEncriptadaIngresada = encriptarClave(claveIngresada);
+    return claveEncriptadaIngresada.equals(claveEncriptada);
+  }
 
   public static boolean esEmailValido(String email) {
     if (email == null) return false;

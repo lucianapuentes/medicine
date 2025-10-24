@@ -19,4 +19,7 @@ public interface MedicoRepositorio extends JpaRepository<Medico, String> {
   @Query(value = "SELECT * FROM medico WHERE medico.id =:id AND medico.eliminado = false", nativeQuery = true)
   Optional<Medico> findById(@Param("id") String id);
 
+  @Query(value = "SELECT * FROM medico WHERE medico.documento =:documento AND medico.eliminado = false", nativeQuery = true)
+  Optional<Medico> findByDocumento(@Param("documento") String documento);
+
 }

@@ -17,4 +17,7 @@ public interface PacienteRepositorio extends JpaRepository<Paciente, String> {
   @Query(value = "SELECT * FROM paciente WHERE paciente.id =:id AND paciente.eliminado = false", nativeQuery = true)
   Optional<Paciente> findById(@Param("id") String id);
 
+  @Query(value = "SELECT * FROM paciente WHERE paciente.documento =:documento AND paciente.eliminado = false", nativeQuery = true)
+  Optional<Paciente> findByDocumento(@Param("documento") String documento);
+
 }

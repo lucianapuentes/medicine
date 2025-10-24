@@ -2,6 +2,8 @@ package com.example.medicine.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.io.Serializable;
+
+import org.hibernate.annotations.GenericGenerator;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,7 +15,8 @@ import java.io.Serializable;
 public class Medico implements Serializable {
 
   @Id
-  @GeneratedValue(generator = "UUID")
+  @GeneratedValue(generator = "uuid2")
+  @GenericGenerator(name = "uuid2", strategy = "uuid2")
   @Column(updatable = false, nullable = false)
   private String id;
 

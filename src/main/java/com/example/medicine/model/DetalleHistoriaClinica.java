@@ -2,7 +2,9 @@ package com.example.medicine.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util. Date;
+import java.util.Date;
+import java.time.LocalDate;
+import org.hibernate.annotations.GenericGenerator;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,7 +25,7 @@ public class DetalleHistoriaClinica implements Serializable {
     private String detalleHistoria;
 
     @Column(name = "fechaHistoria", nullable = false)
-    private Date fechaHistoria;
+    private LocalDate fechaHistoria;
 
     @ManyToOne
     @JoinColumn(name = "medico_id", nullable = false)

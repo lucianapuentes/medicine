@@ -86,7 +86,7 @@ public class PacienteController {
         return "redirect:/pacientes";
     }
 
-    @PostMapping("/eliminar/{id}")
+    @GetMapping("/eliminar/{id}")
     public String eliminarPaciente(@PathVariable String id, Model model) throws Exception {
         Optional <Paciente> pacienteOpt = pacienteServicio.findById(id);
         if (!pacienteOpt.isPresent()) {

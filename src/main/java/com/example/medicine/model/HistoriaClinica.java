@@ -22,6 +22,9 @@ public class HistoriaClinica implements Serializable {
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "historiaClinica", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<DetalleHistoriaClinica> detallesHistoriaClinica;
     
     
     @Column(name = "eliminado")
@@ -30,4 +33,5 @@ public class HistoriaClinica implements Serializable {
     public boolean isActivo() {
         return !eliminado;
     }
+
 }
