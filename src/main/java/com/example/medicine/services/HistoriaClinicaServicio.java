@@ -16,6 +16,9 @@ import com.example.medicine.model.Medico;
 import com.example.medicine.model.DetalleHistoriaClinica;
 import com.example.medicine.repositories.DetalleHistoriaClinicaRepositorio;
 import com.example.medicine.repositories.HistoriaClinicaRepositorio;
+import java.util.List;
+import java.util.Optional;
+import jakarta.transaction.Transactional;
 
 @Service
 public class HistoriaClinicaServicio extends EntityServiceTemplate<HistoriaClinica> {
@@ -38,11 +41,13 @@ public class HistoriaClinicaServicio extends EntityServiceTemplate<HistoriaClini
         historiaClinica.getDetallesHistoriaClinica().add(detalleHistoriaClinica);
         return historiaClinicaRepositorio.save(historiaClinica);
     }
-
+    @Override
+    @Transactional
     public void guardar(HistoriaClinica historiaClinica) {
         historiaClinicaRepositorio.save(historiaClinica);
     }
     @Override
+    @Transactional
     public void validar(HistoriaClinica historiaClinica) throws ErrorServicio {
         if (historiaClinica.getPaciente() == null) {
             throw new ErrorServicio("El paciente no puede ser nulo");
@@ -68,6 +73,7 @@ public class HistoriaClinicaServicio extends EntityServiceTemplate<HistoriaClini
     
     }
     @Override
+    @Transactional
     public void actualizar(HistoriaClinica historiaClinica) throws ErrorServicio {
         Optional<HistoriaClinica> opt = historiaClinicaRepositorio.findById(historiaClinica.getId());
         if (opt.isPresent()) {
@@ -80,6 +86,7 @@ public class HistoriaClinicaServicio extends EntityServiceTemplate<HistoriaClini
         }
     }
     @Override
+    @Transactional
     public void eliminar(HistoriaClinica historiaClinica) throws ErrorServicio {
         Optional<HistoriaClinica> opt = historiaClinicaRepositorio.findById(historiaClinica.getId());
         if (opt.isPresent()) {
@@ -90,5 +97,26 @@ public class HistoriaClinicaServicio extends EntityServiceTemplate<HistoriaClini
             throw new ErrorServicio("La historia clínica no existe");
         }
     }
+    @Transactional
+    public List<HistoriaClinica> listarHistoriasClinicasPorPaciente(Paciente paciente) {
+        return historiaClinicaRepositorio.findByPacienteId(paciente.getId());
+    }
+    @Transactional
+    public Optional<HistoriaClinica> buscarPorId(String id) {
+        return historiaClinicaRepositorio.findById(id);
+    }
+    @Transactional
+    public List<HistoriaClinica> listarTodasLasHistoriasClinicas() {
+        return historiaClinicaRepositorio.findAll();
+    }
+    @Transactional
+    public List<HistoriaClinica> listarActivas(){
+        return historiaClinicaRepositorio.findAllByEliminadoFalse();
+    }
+    @Transactional
+    public List<HistoriaClinica> listarHistoriasClinicasPorUsuario(Usuario usuario) {
+        return historiaClinicaRepositorio.findByUsuarioId(usuario.getId());
+    }
+   
 
 }

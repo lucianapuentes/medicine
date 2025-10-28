@@ -13,7 +13,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "detalle_historia_clinica")
 public class DetalleHistoriaClinica implements Serializable {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(updatable = false, nullable = false)
     private String id;
 
@@ -35,4 +36,6 @@ public class DetalleHistoriaClinica implements Serializable {
     private boolean eliminado;
 
     // Getters and Setters
+
+    
 }

@@ -15,7 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.medicine.model.Medico;
 import com.example.medicine.model.FotoPaciente;
 import com.example.medicine.model.Paciente;
+import com.example.medicine.model.Usuario;
 import com.example.medicine.services.MedicoServicio;
+
+import jakarta.servlet.http.HttpSession;
 
 @RequestMapping("/medicos")
 @Controller
@@ -35,8 +38,13 @@ public class MedicoController {
             @RequestParam String nombre,
             @RequestParam String apellido,
             @RequestParam String documento,
-            Model model
+            Model model,
+            HttpSession session
     ) throws Exception {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if(login==null){
+            return "index";
+        }
         Medico medico = new Medico();
         medico.setNombre(nombre);
         medico.setApellido(apellido);
@@ -56,8 +64,13 @@ public class MedicoController {
             @RequestParam String nombre,
             @RequestParam String apellido,
             @RequestParam String documento,
-            Model model
+            Model model,
+            HttpSession session
     )  throws Exception {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if(login==null){
+            return "index";
+        }
         Medico medico = medicoServicio.buscarMedico(id);
         medico.setNombre(nombre);
         medico.setApellido(apellido);
@@ -67,9 +80,12 @@ public class MedicoController {
     }
 
     @GetMapping("/modificar/{id}") // <--- ESTE MÉTODO ES EL QUE FALTA
-    public String mostrarFormularioModificacion(@PathVariable String id, Model model) throws Exception {
+    public String mostrarFormularioModificacion(@PathVariable String id, Model model, HttpSession session) throws Exception {
         Medico medico = medicoServicio.buscarMedico(id);
-
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if(login==null){
+            return "index";
+        }
         if (medico == null) {
             // En lugar de una excepción cruda, podrías redirigir con un mensaje de error.
             throw new Exception("No se encontró el médico solicitado para modificar");
@@ -83,7 +99,11 @@ public class MedicoController {
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminarMedico(@PathVariable String id, Model model) throws Exception {
+    public String eliminarMedico(@PathVariable String id, Model model, HttpSession session) throws Exception {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if(login==null){
+            return "index";
+        }
         Medico medico = medicoServicio.buscarMedico(id);
         if (medico == null) {
             throw new Exception("No se encontró el médico solicitado");

@@ -120,4 +120,9 @@ public class PacienteServicio extends EntityServiceTemplate<Paciente> {
     public List<Paciente> listarTodos() {
         return pacienteRepositorio.findAll();
     }
+
+    @Transactional
+    public List<Paciente> listarActivos(){
+      return pacienteRepositorio.findAllActives();
+    }
 }

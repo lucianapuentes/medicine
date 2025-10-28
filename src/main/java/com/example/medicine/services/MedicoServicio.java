@@ -27,6 +27,14 @@ public class MedicoServicio extends EntityServiceTemplate<Medico> {
         }
     }
     @Transactional
+    public List<Medico> listarMedicosActivos() throws ErrorServicio{
+      try{
+        return medicoRepositorio.findAllActives();
+      } catch(ErrorServicio e){
+        throw new ErrorServicio("Error del sistema");
+      }
+    }
+    @Transactional
     public Medico buscarMedicoPorDocumento(String documento) throws ErrorServicio {
         try {
             Optional<Medico> opt = medicoRepositorio.findByDocumento(documento);
@@ -123,7 +131,7 @@ public class MedicoServicio extends EntityServiceTemplate<Medico> {
   }
 
   @Transactional
-  protected Medico buscarPorId(String id) throws ErrorServicio {
+  public Medico buscarPorId(String id) throws ErrorServicio {
     try {
         Optional<Medico> opt = medicoRepositorio.findById(id);
         if (opt.isPresent()) {

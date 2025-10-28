@@ -51,6 +51,11 @@ public class UsuarioController {
         public String login() {
             return "index";
         }
+    @GetMapping("/home")
+    public String home(){
+
+        return "views/home";
+    }
 
     @PostMapping("/login")
     public String loginUsuario(@RequestParam String nombreUsuario, @RequestParam String clave, ModelMap modelo,  HttpSession session) {
